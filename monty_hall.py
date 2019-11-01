@@ -29,7 +29,7 @@ import random
     Monty opens up 999,998 doors that hide goats to leave one door still closed.  Now which door do you think
     is most likely to hide the car? The one you choose, or the one that Monty avoided opening while
     he opened all 999,998 other doors?!  It seems obvious to me that the other door that Monty left un opened
-    has a massively higher chance of hiding the door than the original choice!  As N reduces to 3 this
+    has a massively higher chance of hiding the car than the original choice!  As N reduces to 3 this
     obviousness reduces greatly however!
 
     Summary:
@@ -56,14 +56,14 @@ def pick_random_door():
 
     return random.randint(0, 3 - 1)
 
-def pick_monty_door(car_door, my_guess):
+def pick_monty_door(car_door, players_guess):
     """
     Pick a door for Monty to open,
     Monty opens up the first door that doesn't
     have a car and that play hasn't already chosen...
 
     :param car_door: The door behind which the car resides
-    :param my_guess: The door which the play choose
+    :param players_guess: The door which the play choose
     :return: The index of the door that Monty opens
     """
 
@@ -71,12 +71,12 @@ def pick_monty_door(car_door, my_guess):
         if d == car_door:
             continue
 
-        if d == my_guess:
+        if d == players_guess:
             continue
 
         return d
 
-def pick_other_door(my_guess, monty_door):
+def pick_other_door(players_guess, monty_door):
     """
     The player has chosen to switch their chosen door, so we
     need to pick another one for them.  We pick the door that
@@ -84,13 +84,13 @@ def pick_other_door(my_guess, monty_door):
     a.) Doesn't match the player's original guess
     b.) Wasn't chosen by Monty
 
-    :param my_guess:
+    :param players_guess:
     :param monty_door:
     :return: The other door's index
     """
 
     for d in range(0, 3):
-        if d == my_guess:
+        if d == players_guess:
             continue
 
         if d == monty_door:
@@ -114,26 +114,26 @@ def run_game():
     print("Car is behind door %d" % car_door)
 
     # Player chooses a door
-    my_guess = pick_random_door()
-    print("Player has guessed door %d" % my_guess)
+    players_guess = pick_random_door()
+    print("Player has guessed door %d" % players_guess)
 
     # Monty opens up a door that doesn't have a
     # car behind it.
-    monty_door = pick_monty_door(car_door, my_guess)
+    monty_door = pick_monty_door(car_door, players_guess)
     print("Monty opens door %d" % monty_door)
 
     # Does the player switch doors after Monty
     # opens his??
     if switch:
-        my_guess = pick_other_door(my_guess, monty_door)
-        print("Player switches to door %d" % my_guess)
+        players_guess = pick_other_door(players_guess, monty_door)
+        print("Player switches to door %d" % players_guess)
 
-    if my_guess == car_door:
+    if players_guess == car_door:
         print("Player wins!")
     else:
         print("Player looses ;-(")
 
-    return my_guess == car_door
+    return players_guess == car_door
 
 def run_games():
     wins = 0
