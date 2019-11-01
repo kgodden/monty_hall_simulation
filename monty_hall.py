@@ -30,7 +30,8 @@ import random
     is most likely to hide the car? The one you choose, or the one that Monty avoided opening while
     he opened all 999,998 other doors?!  It seems obvious to me that the other door that Monty left un opened
     has a massively higher chance of hiding the car than the original choice!  As N reduces to 3 this
-    obviousness reduces greatly however!
+    obviousness reduces greatly however!  This simulation can be run with more than 3 doors to experiment
+    with this...
 
     Summary:
     --------
@@ -43,8 +44,27 @@ import random
     If the player sticks with their door then their chance of winning the car should be 1/3
     If the player switches door then their chances of winning the car increases to 2/3!!!
 
+    If you want to run the game with more doors to see how the probabilities change
+    just change the door_count value below.
+
     For more info: https://en.wikipedia.org/wiki/Monty_Hall_problem
 """
+
+# Should the player switch their guess or stick
+# with their original one?
+switch = True
+
+# The number of doors in the game, should be 3 for
+# the problem as normally stated.
+door_count = 3
+
+# The number of times to run the simulation
+game_count = 10000
+
+# Should we print lots of messages?
+# If door_count is large change this to True to
+# make simulation run faster.
+quiet = False
 
 def pick_random_door():
     """
@@ -54,29 +74,40 @@ def pick_random_door():
     :return: the chosen door
     """
 
-    return random.randint(0, 3 - 1)
+    return random.randint(0, door_count - 1)
 
-def pick_monty_door(car_door, players_guess):
+def pick_monty_doors(car_door, players_guess):
     """
-    Pick a door for Monty to open,
-    Monty opens up the first door that doesn't
+    Pick the doors for Monty to open, of the number
+    of doors is 3 then Monty opens up the first door that doesn't
     have a car and that play hasn't already chosen...
+
+    If door_count > 3 then Monty will open up all of the doors
+    that hide goats avoiding the door that has been already picked
 
     :param car_door: The door behind which the car resides
     :param players_guess: The door which the play choose
-    :return: The index of the door that Monty opens
+    :return: A list of the indices of the doors that Monty opens
     """
 
-    for d in range(0, 3):
+    monty_doors = []
+
+    for d in range(0, door_count):
+
+        if len(monty_doors) == door_count - 2:
+            break
+
         if d == car_door:
             continue
 
         if d == players_guess:
             continue
 
-        return d
+        monty_doors.append(d)
 
-def pick_other_door(players_guess, monty_door):
+    return monty_doors
+
+def pick_other_door(players_guess, monty_doors):
     """
     The player has chosen to switch their chosen door, so we
     need to pick another one for them.  We pick the door that
@@ -84,16 +115,19 @@ def pick_other_door(players_guess, monty_door):
     a.) Doesn't match the player's original guess
     b.) Wasn't chosen by Monty
 
-    :param players_guess:
-    :param monty_door:
+    :param players_guess:  The door that the player originally picked
+    :param monty_doors: The doors that Monty has opened (usually just 1)
     :return: The other door's index
     """
 
-    for d in range(0, 3):
+    for d in range(0, door_count):
+
+        # Can't switch to the player's original guess
         if d == players_guess:
             continue
 
-        if d == monty_door:
+        # Don;t pick a door that Monty has opened
+        if d in monty_doors:
             continue
 
         return d
@@ -105,41 +139,44 @@ def run_game():
     :return:  win/loose --> True/False
     """
 
-    # Should the player switch their guess or stick
-    # with their original one?
-    switch = True
-
     # Pick the door with the car
     car_door = pick_random_door()
-    print("Car is behind door %d" % car_door)
+
+    if not quiet:
+        print("Car is behind door %d" % car_door)
 
     # Player chooses a door
     players_guess = pick_random_door()
-    print("Player has guessed door %d" % players_guess)
+
+    if not quiet:
+        print("Player has guessed door %d" % players_guess)
 
     # Monty opens up a door that doesn't have a
     # car behind it.
-    monty_door = pick_monty_door(car_door, players_guess)
-    print("Monty opens door %d" % monty_door)
+    monty_doors = pick_monty_doors(car_door, players_guess)
+
+    if not quiet:
+        print("Monty opens: " + str(monty_doors))
 
     # Does the player switch doors after Monty
     # opens his??
     if switch:
-        players_guess = pick_other_door(players_guess, monty_door)
-        print("Player switches to door %d" % players_guess)
+        players_guess = pick_other_door(players_guess, monty_doors)
 
-    if players_guess == car_door:
-        print("Player wins!")
-    else:
-        print("Player looses ;-(")
+        if not quiet:
+            print("Player switches to door %d" % players_guess)
+
+    if not quiet:
+        if players_guess == car_door:
+            print("Player wins!")
+        else:
+            print("Player looses ;-(")
 
     return players_guess == car_door
 
 def run_games():
     wins = 0
     game = 0
-
-    game_count = 10000
 
     while game < game_count:
         game += 1
