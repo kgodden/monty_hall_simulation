@@ -20,3 +20,23 @@ If the player sticks with their door then their chance of winning the car should
 If the player switches door then their chances of winning the car increases to 2/3!!!
 
 For more info: https://en.wikipedia.org/wiki/Monty_Hall_problem
+
+This program simulates the Monty Hall problem and outputs the resulting 'win-factor'.  The following variables can be tweaked to alter the simulation parameters:
+
+*game_count* - How many times the game is run before the 'win-rate' is calculated.
+
+*switch* - Should the player switch doors or stick with their original choice?
+
+*door_count* - Normally set to 3, this simulator can work with more than 3 doors.
+
+*quiet* - If True then game messages are not printed out, this allows the simulation to run faster when door_count is high.
+
+Example Output:
+---------------
+
+<pre>
+Games: 10000
+Wins: 6684
+------------------------------
+Win rate: 0.668400
+</pre>
