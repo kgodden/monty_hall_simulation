@@ -1,5 +1,5 @@
 # monty_hall_simulation
-Simulates the Monty Hall problem with 3 doors
+Simulates the Monty Hall problem with 3 or more doors
 
 The Monty Hall problem is a very (to me at least) counter-intuitive probability mind experiment which
 contorts my brain and fascinates me at the same time. I can just about understand the
